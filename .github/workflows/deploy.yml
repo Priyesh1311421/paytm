@@ -42,4 +42,4 @@ jobs:
           sudo docker run -d --name web-app -p 3005:3000 priyesh35/web-app:latest 
         timeout: 30s
         command_timeout: 10m
-        capture_stdout: false  
+        capture_stdout: false
