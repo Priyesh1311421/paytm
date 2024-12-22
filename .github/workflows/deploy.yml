@@ -1,4 +1,4 @@
-name: Build and Deploy to DockerHub
+name: Build and Deploy to Docker Hub
 
 on:
   push:
@@ -6,52 +6,40 @@ on:
       - master
 
 jobs:
-  deploy:
-    name: Deploy the project
+  build-and-push:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+    - name: Check Out Repo
+      uses: actions/checkout@v2
 
-      - name: Use Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-      
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run build
-        run: npm run build
-
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
            
-      - name: Build and Push Docker image
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: ./docker/Dockerfile.user
-          push: true
-          tags: priyesh35/web-app:latest
+    - name: Build and Push Docker image
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: ./docker/Dockerfile.user
+        push: true
+        tags: priyesh35/web-app:latest  
 
-      - name: Verify Pushed Image
-        run: docker pull priyesh35/web-app:latest
+    - name: Verify Pushed Image
+      run: docker pull priyesh35/web-app:latest 
 
-      - name: Deploy to EC2
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
-          port: 22
-          script: |
-            sudo docker pull priyesh35/web-app:latest
-            sudo docker stop web-app || true
-            sudo docker rm web-app || true
-            sudo docker run -d --name web-app -p 3005:3000 priyesh35/web-app:latest
-          timeout: 30s
-          command_timeout: 10m
-          capture_stdout: false
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_KEY }}
+        script: |
+          sudo docker pull priyesh35/web-app:latest
+          sudo docker stop web-app || true
+          sudo docker rm web-app || true
+          docker run -d --name web-app -p 3005:3000 priyesh35/web-app:latest 
+        timeout: 30s
+        command_timeout: 10m
+        capture_stdout: false  
