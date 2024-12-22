@@ -39,7 +39,7 @@ jobs:
           sudo docker pull priyesh35/web-app:latest
           sudo docker stop web-app || true
           sudo docker rm web-app || true
-          sudo docker run -d --name web-app -p 3005:3000 -e DATABASE_URL=${{ secrets.DATABASE_URL }} priyesh35/web-app:latest
+          sudo docker run -d --name web-app -p 3005:3000 -e DATABASE_URL=${{ secrets.DB_URL }} priyesh35/web-app:latest
         timeout: 30s
         command_timeout: 10m
         capture_stdout: false
