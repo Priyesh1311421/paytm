@@ -29,14 +29,18 @@ jobs:
     - name: Verify Pushed Image
       run: docker pull priyesh35/web-app:latest 
 
+    - name: Decode SSH key
+      id: decode_key
+      run: echo "${{ secrets.SSH_KEY }}" | base64 --decode > key.pem
+
     - name: Deploy to EC2
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USERNAME }}
-        key: ${{ secrets.SSH_KEY }}
+        key: ${{ steps.decode_key.outputs.key }}
         script: |
           sudo docker pull priyesh35/web-app:latest
           sudo docker stop web-app || true
           sudo docker rm web-app || true
-          docker run -d --name web-app -p 3005:3000 priyesh35/web-app:latest 
+          sudo docker run -d --name web-app -p 3005:3000 priyesh35/web-app:latest
