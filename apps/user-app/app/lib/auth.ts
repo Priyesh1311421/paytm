@@ -36,7 +36,9 @@ export const authOptions = {
                             number: existingUser.number
                         };
                     }
-                    return null;
+                    return {
+                        error: "Invalid credentials"
+                    };
                 }
 
                 try {
@@ -60,7 +62,7 @@ export const authOptions = {
                         id: user.id.toString(),
                         name: user.name,
                         email: user.email,
-                        number:user.number
+                        number: user.number
                     };
                 } catch (e) {
                     console.error(e);

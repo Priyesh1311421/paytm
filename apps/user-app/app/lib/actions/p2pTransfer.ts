@@ -12,7 +12,8 @@ export async function p2pTransfer(to: string, amount: number) {
             message: "Error while sending"
         };
     }
-    const toUser = await prisma.user.findFirst({
+
+    const toUser = await prisma.user.findUnique({
         where: {
             number: to
         }
@@ -24,8 +25,14 @@ export async function p2pTransfer(to: string, amount: number) {
         };
     }
 
+    if (Number(from) === toUser.id) {
+        return {
+            message: "Cannot transfer to self"
+        };
+    }
+
     try {
-        await prisma.$transaction(async (tx) => {
+        const Transaction = await prisma.$transaction(async (tx) => {
             await tx.$queryRaw`SELECT * FROM "Balance" WHERE "userId" = ${Number(from)} FOR UPDATE`;
 
             const fromBalance = await tx.balance.findFirst({
@@ -35,34 +42,68 @@ export async function p2pTransfer(to: string, amount: number) {
                 throw new Error(`Insufficient funds ${fromBalance?.amount}`);
             }
 
-            
             await tx.balance.updateMany({
-                where: { userId: Number(from) },
-                data: { amount: { decrement: amount } },
-            });
+                where:{
+                    userId: Number(from)
+                },
+                data:{
+                    amount:{
+                        decrement: amount
+                    },
+                    locked:{
+                        increment: amount
+                    }
+                }
+            })
+
+            const transaction = await tx.p2pTransfer.create({
+                data:{
+                    fromUserId: Number(from),
+                    toUserId: toUser.id,
+                    amount,
+                    timestamp: new Date(),
+                    status: "Pending"
+                }
+            })
+
+            
+
 
             await tx.balance.updateMany({
                 where: { userId: toUser.id },
                 data: { amount: { increment: amount } },
             });
 
-            await tx.p2pTransfer.create({
-                data: {
-                    fromUserId: Number(from),
-                    toUserId: toUser.id,
-                    amount,
-                    timestamp: new Date()
+            await tx.balance.updateMany({
+                where:{
+                    userId: Number(from)
+                },
+                data:{
+                    locked:{
+                        decrement: amount
+                    }
                 }
-            });
+            })
+
+
+            await tx.p2pTransfer.update({
+                where:{
+                    id: transaction.id
+                },
+                data:{
+                    status: "Completed"
+                }
+            })
+            return transaction;
+
         });
 
         return {
-            message: "Payment  successful"
+            message: "Payment  successful",
+            transaction: Transaction
         };
     } catch (error) {
-        return {
-            message: "Payment failed",
-            error: error
-        };
+       
+        console.error(error);
     }
 }
