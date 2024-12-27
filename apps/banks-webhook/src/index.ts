@@ -5,7 +5,7 @@ const app = express();
 
 app.use(express.json());
 
-app.post("/hdfcWebhook", async(req, res) => {
+app.post("/hdfcWebhook/success", async(req, res) => {
 
     const paymentSchema = z.object({
         token: z.string(),
@@ -51,6 +51,59 @@ app.post("/hdfcWebhook", async(req, res) => {
             ])
             res.status(200).json({
                 message:"Payment successful",
+                PaymentInformation
+            })
+        }
+        else{
+            res.status(400).json({
+                message:"Payment already processed"
+            })
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(411).json({
+            message:"Error while processing webhook"
+        })
+    }
+    
+});
+app.post("/hdfcWebhook/fail", async(req, res) => {
+
+    const paymentSchema = z.object({
+        token: z.string(),
+        userId: z.string(),
+        amount: z.number(),
+    });
+
+    const Payment = paymentSchema.parse(req.body);
+
+    const PaymentInformation = {
+        token: Payment.token,
+        userId: Payment.userId,
+        amount: Payment.amount,
+    }
+
+    try {
+        const isPending = await prisma.onRampTransaction.findFirst({
+            where:{
+                token:PaymentInformation.token,
+                status:"Pending"
+            }
+        });
+        if(isPending){
+            await prisma.$transaction([
+                
+                prisma.onRampTransaction.updateMany({
+                    where:{
+                        token:PaymentInformation.token
+                    },
+                    data:{
+                        status:"Failed"
+                    }
+                })
+            ])
+            res.status(200).json({
+                message:"Payment Failed",
                 PaymentInformation
             })
         }
