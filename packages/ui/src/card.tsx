@@ -8,10 +8,8 @@ export function Card({
   children?: React.ReactNode;
 }): JSX.Element {
   return (
-    <div
-      className="border p-4"
-    >
-      <h1 className="text-xl border-b pb-2">
+    <div className="border rounded-lg shadow-md p-6 bg-white">
+      <h1 className="text-2xl font-bold border-b pb-4 mb-4 text-gray-800">
         {title}
       </h1>
       <div>{children}</div>
