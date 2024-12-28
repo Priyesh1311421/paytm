@@ -28,7 +28,9 @@ export default function RootLayout({
       <Providers>
         <body className={`${geistSans.variable} ${geistMono.variable}`}>
           <Navbar/>
+          <div>
           {children}
+          </div>
         </body>
       </Providers>
     </html>

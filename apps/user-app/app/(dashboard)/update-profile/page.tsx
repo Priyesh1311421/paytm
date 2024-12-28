@@ -1,7 +1,7 @@
 import React from "react";
-import UpdateProfile from "../../components/UpdateProfile";
+import UpdateProfile from "../../../components/UpdateProfile";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../lib/auth";
+import { authOptions } from "../../lib/auth";
 import { redirect } from "next/navigation";
 
 export default async function updateUserProfile() {
@@ -9,7 +9,7 @@ export default async function updateUserProfile() {
     if (!session?.user?.id) {
         redirect('/')
     }
-  return <div>
+  return <div className="container w-full ">
     <UpdateProfile />
   </div>;
 };

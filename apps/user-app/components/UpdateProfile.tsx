@@ -34,9 +34,9 @@ const UpdateProfile = () => {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 w-full ">
+        <div className="flex flex-col items-center justify-center pt-12 w-full ">
             <h1 className="text-3xl font-bold mb-6">Update Profile</h1>
-            <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
+            <div className="p-6 rounded-lg shadow-md w-full max-w-md">
                 <div className="mb-4">
                     <label htmlFor="name" className="block text-gray-700 font-bold mb-2">Name:</label>
                     <input

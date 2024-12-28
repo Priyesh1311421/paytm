@@ -44,12 +44,29 @@ const RecentTransactionsCard = async ({ take }: { take: number }) => {
     return `₹${(amount / 100).toFixed(2)}`;
   };
 
+
+  const formatDate = (timestamp: Date) => {
+    const date = new Date(timestamp);
+    return date.toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    });
+  };
+
+  const length = transactions.length;
+
   return (
     <div className="w-full h-full p-6">
-      <div className="border rounded-lg shadow-md p-6 bg-white w-full">
         <h1 className="text-2xl font-bold border-b pb-4 mb-4 text-gray-800">
           Recent Transactions
         </h1>
+        {length===0 && <div className={`text-xl text-bold uppercase `}> 
+          No recent transaction
+        </div>}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {transactions.map((transaction) => {
             const isSent = transaction.fromUserId === Number(from);
@@ -76,17 +93,16 @@ const RecentTransactionsCard = async ({ take }: { take: number }) => {
 
                 <div className="flex flex-col items-end">
                   <div className="text-sm text-gray-500">
-                    {new Date(transaction.timestamp).toLocaleString()}
+                  {formatDate(transaction.timestamp)}
                   </div>
                   <div className="font-medium text-lg">
-                    {transactionType} <span className="font-semibold text-gray-800">{userName}</span>
+                    {transactionType} <span className="font-semibold text-gray-800">{userName?.split(' ')[0] ? userName.split(' ')[0] : ''}</span>
                   </div>
                 </div>
               </div>
             );
           })}
         </div>
-      </div>
     </div>
   );
 };

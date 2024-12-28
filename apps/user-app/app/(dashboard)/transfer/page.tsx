@@ -50,15 +50,15 @@ export default async function Transfer() {
     const balance = await getBalance();
     const transactions = await getOnRampTransactions();
 
-    return <div className="w-screen">
-        <div className="text-4xl text-[#6a51a6] pt-8 mb-8 font-bold">
-            Transfer
+    return <div className="pr-2 w-full">
+        <div className="flex items-center justify-center text-4xl text-[#6a51a6] pt-8 mb-8 font-bold">
+            <span>Transfer</span>
         </div>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 p-4">
+        <div className="grid grid-col-1 sm:grid-cols-2 gap-4 p-4 max-md:p-0 max-md:pr-2 w-full">
             <div>
                 <AddMoney />
             </div>
-            <div>
+            <div className="flex flex-col">
                 <BalanceCard amount={balance?.amount || 0} locked={balance?.locked || 0} />
                 <div className="pt-4">
                     <OnRampTransactions transactions={transactions} />

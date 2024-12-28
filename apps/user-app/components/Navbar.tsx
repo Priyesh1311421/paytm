@@ -16,5 +16,5 @@ export default function Navbar():JSX.Element {
   }
  
   const session = useSession();
-  return <div><Appbar onSignin={signIn} onSignout={signOut} user={session.data?.user} update ={userupdate} home={home} /></div>;
+  return <div className="z-10 sticky"><Appbar onSignin={signIn} onSignout={signOut} user={session.data?.user} update ={userupdate} home={home} /></div>;
 };

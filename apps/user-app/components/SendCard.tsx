@@ -33,8 +33,7 @@ export function SendCard() {
     };
 
     return (
-        <div className="h-[90vh]">
-            <Center>
+        <div className="h-full flex items-center justify-center pt-20 pb-8">
                 <Card title="Send">
                     <div className="min-w-72 pt-2">
                         <TextInput
@@ -76,7 +75,6 @@ export function SendCard() {
                         </div>
                     </div>
                 </Card>
-            </Center>
         </div>
     );
 }

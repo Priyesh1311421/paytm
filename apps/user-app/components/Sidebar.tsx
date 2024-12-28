@@ -1,23 +1,19 @@
-import Sidebar from "../../components/Sidebar";
+import React from "react";
+import { SidebarItem } from "./SidebarItem";
 
-
-export default function Layout({
-  children,
-}: {
-  children: React.ReactNode;
-}): JSX.Element {
+const Sidebar = () => {
   return (
-    <div className="flex min-h-screen">
-        < Sidebar />
-        <div className="h-full w-9/12 relative top-[82px] left-72 max-md:left-20">
-          <div>
-            {children}
-          </div>
+        <div className="fixed top-[64px] left-0 w-72 border-r border-slate-300 mr-4 pt-28 max-md:w-16 min-h-screen ">
+                <SidebarItem href={"/dashboard"} icon={<HomeIcon />} title="Home" />
+                <SidebarItem href={"/transfer"} icon={<TransferIcon />} title="Transfer" />
+                <SidebarItem href={"/transactions"} icon={<TransactionsIcon />} title="Transactions" />
+                <SidebarItem href={"/p2p-transfer"} icon={<P2PTransferIcon />} title="P2P Transfer" />
         </div>
-            
-    </div>
   );
-}
+};
+
+export default Sidebar;
+
 
 // Icons Fetched from https://heroicons.com/
 function HomeIcon() {
