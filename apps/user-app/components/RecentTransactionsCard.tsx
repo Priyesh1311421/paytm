@@ -14,7 +14,7 @@ interface Transaction {
 }
 
 const RecentTransactionsCard = async ({ take }: { take: number }) => {
-  // Fetch session and user id
+
   const session = await getServerSession(authOptions);
   const from = session?.user?.id;
 
@@ -22,7 +22,6 @@ const RecentTransactionsCard = async ({ take }: { take: number }) => {
     redirect('/');
   }
 
-  // Fetch the user's transactions
   const transactions = await prisma.p2pTransfer.findMany({
     where: {
       OR: [
@@ -40,7 +39,7 @@ const RecentTransactionsCard = async ({ take }: { take: number }) => {
     take: take,
   });
 
-  // Helper function to format the amount
+
   const formatAmount = (amount: number) => {
     return `₹${(amount / 100).toFixed(2)}`;
   };
@@ -55,7 +54,7 @@ const RecentTransactionsCard = async ({ take }: { take: number }) => {
           {transactions.map((transaction) => {
             const isSent = transaction.fromUserId === Number(from);
             const amountClass = isSent ? "text-red-500" : "text-green-500";
-            const arrowClass = isSent ? "transform rotate-45 bg-red-500" : "transform rotate-135 bg-green-500";
+            const arrowClass = isSent ? "text-red-500" : "transform rotate-180 text-green-500";
             const userName = isSent ? transaction.toUser.name : transaction.fromUser.name;
             const transactionType = isSent ? "Sent to" : "Received from";
 
@@ -65,10 +64,14 @@ const RecentTransactionsCard = async ({ take }: { take: number }) => {
                 className="flex items-center justify-between bg-white shadow-md rounded-lg p-4 hover:bg-gray-100 transition-all"
               >
                 <div className="flex items-center space-x-4">
-                  <div className={`${arrowClass} w-6 h-6`} />
                   <span className={`font-semibold ${amountClass} text-xl`}>
                     {formatAmount(transaction.amount)}
                   </span>
+                  <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" className={`${arrowClass} bi bi-arrow-up-right`} viewBox="0 0 16 16">
+                      <path fillRule="evenodd" d="M14 2.5a.5.5 0 0 0-.5-.5h-6a.5.5 0 0 0 0 1h4.793L2.146 13.146a.5.5 0 0 0 .708.708L13 3.707V8.5a.5.5 0 0 0 1 0z"/>
+                    </svg>
+                  </div>
                 </div>
 
                 <div className="flex flex-col items-end">

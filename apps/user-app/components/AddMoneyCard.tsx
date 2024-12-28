@@ -21,7 +21,7 @@ export const AddMoney = () => {
     const [error, setError] = useState("");
 
     const handleAddMoney = async () => {
-        if (value <= 1) {
+        if (value < 1) {
             setError("Amount must be greater than 1");
             return;
         }
