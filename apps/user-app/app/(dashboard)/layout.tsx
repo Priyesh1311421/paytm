@@ -9,7 +9,7 @@ export default function Layout({
   return (
     <div className="flex min-h-screen">
         < Sidebar />
-        <div className="h-full w-9/12 relative top-[82px] left-72 max-md:left-20">
+        <div className=" h-full w-9/12 relative top-[82px] left-72 max-md:left-20">
           <div>
             {children}
           </div>
