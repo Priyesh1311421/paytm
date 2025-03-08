@@ -9,6 +9,6 @@ export default async function P2p() {
         redirect('/');
     }
     return <div className="w-full">
-        <SendCard />
+        <SendCard /> 
     </div>
 }
