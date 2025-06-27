@@ -104,7 +104,9 @@ export async function p2pTransfer(to: string, amount: number) {
             transaction: Transaction
         };
     } catch (error) {
-       
         console.error(error);
+        return {
+            message: "Transfer failed",
+        };
     }
 }
